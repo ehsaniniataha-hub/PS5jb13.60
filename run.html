@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PS5-Relapse</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #060606;
+      color: #fff;
+    }
+    #console {
+      box-sizing: border-box;
+      min-height: 100vh;
+      padding: 10px 12px;
+      color: #dfe3ee;
+      font: 14px/1.45 ui-monospace, Consolas, monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-y: auto;
+    }
+    #console div { padding: 1px 0; }
+  </style>
+</head>
+<body>
+  <div id="console"></div>
+  <script src="./src/payloads.js?v=20261031"></script>
+  <script src="./src/firmware.js?v=20261031"></script>
+  <script src="./src/main.js?v=20261031"></script>
+  <script src="./src/rop.js?v=20261031"></script>
+  <script src="./src/utils/syscalls.js?v=20261031"></script>
+  <script type="module" src="./src/site.js?v=20261031"></script>
+</body>
+</html>

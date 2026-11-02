@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relapse</title>
+<style>
+:root {
+  --text-color-primary: #fff;
+  --text-color-secondary: #ccc;
+  --text-color-tertiary: #999;
+  --background-color-primary: #0c0c0f;
+  --surface-color-primary: #202125;
+  --surface-color-hover: #a2a2a6;
+  --text-color-primary-hover: #202020;
+  font-size: 17px;
+}
+
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  background-color: var(--background-color-primary);
+  color: var(--text-color-primary);
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+a { color: var(--text-color-secondary); }
+a:active, a:focus { outline: 0; border: none; }
+
+.btn {
+  padding: 1rem 2rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  margin: .5rem auto;
+  cursor: pointer;
+  line-height: 2.5rem;
+  border-radius: 1.25rem;
+  width: 70%;
+  background-color: var(--surface-color-primary);
+  border: none;
+  color: var(--text-color-primary);
+  font-size: 1.3rem;
+  transition: background-color .25s ease;
+  box-sizing: border-box;
+}
+
+.btn:hover, .btn:focus {
+  background-color: var(--surface-color-hover);
+  color: var(--text-color-primary-hover);
+}
+
+.btn-secondary { padding: .5rem 2rem; font-size: 1rem; }
+
+.text-center { text-align: center; }
+.fw-bold { font-weight: 800; }
+#pre-jb-view { padding-top: 18vh; }
+
+#credits {
+  position: fixed; bottom: 14px; left: 0; right: 0;
+  text-align: center; padding: 0 16px; pointer-events: none;
+}
+#credits span { display: block; color: #6f7076; font-size: 0.8rem; font-weight: 700;
+                letter-spacing: .22em; margin-bottom: 5px; }
+#credits h3 { margin: 0 auto; max-width: 60rem; font-size: 0.82rem; font-weight: 700;
+              color: #4a4b50; line-height: 1.55; }
+</style>
+</head>
+<body>
+  <div style="padding:.5rem">
+    <h1 class="text-center">Relapse (13.60)</h1>
+    <p class="text-center">Current Firmware: <span class="fw-bold" id="current-fw">Unknown</span></p>
+  </div>
+
+  <div id="pre-jb-view">
+    <a tabindex="0" class="btn fw-bold" href="run.html?v=20261031">Jailbreak</a>
+    <a tabindex="0" class="btn btn-secondary" href="run.html?sender=1&v=20261031">Payloads (sender)</a>
+  </div>
+
+  <div id="credits">
+    <span>creds &amp; greetz</span>
+    <h3>
+      Sonic_Iso, Jordy, ntfargo, ufm42, Dr. Yenyen, TheFlow, SlidyBat, Flatz,
+      cow, nhk, bollarz, Sleirsgoevy, EchoStretch, EarthOnion
+    </h3>
+  </div>
+  <script>
+    try {
+      var m = /PlayStation 5\/(\d+\.\d+)/.exec(navigator.userAgent);
+      document.getElementById("current-fw").textContent = m ? m[1] : "Not detected";
+    } catch (e) { }
+    try { document.querySelector(".btn").focus(); } catch (e) { }
+    // If jailbreak was done before (localStorage survives browser restarts),
+    // go straight to payload sender mode - it verifies elfldr itself and
+    // falls back to a full jailbreak if the console was rebooted.
+    if (navigator.userAgent.includes("PlayStation 5")) {
+      try {
+        if (localStorage.getItem("relapse.jbDone") === "1" ||
+            sessionStorage.getItem("relapse.jbDone") === "1") {
+          window.location.href = "run.html?sender=1";
+        }
+      } catch (e) {}
+      // Also check elfldr via server API
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/api/elfldr", true);
+        xhr.timeout = 2000;
+        xhr.onload = function() {
+          try {
+            var j = JSON.parse(xhr.responseText);
+            if (j && j.up) window.location.href = "run.html?sender=1";
+          } catch (e) {}
+        };
+        xhr.send();
+      } catch (e) {}
+    }
+    if (!navigator.userAgent.includes("PlayStation 5")) {
+      var btns = document.querySelectorAll(".btn");
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].style.opacity = "0.3";
+        btns[i].style.pointerEvents = "none";
+      }
+      var w = document.createElement("p");
+      w.style.cssText = "text-align:center;color:#ff4444;font-weight:700;font-size:1.1rem;margin-top:1rem";
+      w.textContent = "PlayStation 5 Required";
+      document.getElementById("pre-jb-view").appendChild(w);
+    }
+  </script>
+</body>
+</html>
